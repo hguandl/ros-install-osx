@@ -43,12 +43,12 @@ do_install()
   brew update
 
   # XQuartz
-  if ! hash Xquartz 2>/dev/null; then
-    brew tap homebrew/cask
-    brew cask install xquartz
-    echo "Log out and in to finalize XQuartz setup."
-    exit 0
-  fi
+  # if ! hash Xquartz 2>/dev/null; then
+    # brew tap homebrew/cask
+    # brew cask install xquartz
+    # echo "Log out and in to finalize XQuartz setup."
+    # exit 0
+  # fi
 
   # Check for pip packages in the system Python directory.
   if [ $(ls /Library/Python/2.7/site-packages/ | wc -l) -gt 1 ]; then
