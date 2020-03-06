@@ -22,12 +22,12 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-ROS_DISTRO=melodic
-ROS_CONFIGURATION=desktop_full
-ROS_INSTALL="melodic-desktop-full"
+ROS_DISTRO=${ROS_DISTRO:-melodic}
+ROS_CONFIGURATION=${ROS_CONFIGURATION:-desktop_full}
+ROS_EXTRA_PACKAGES=${ROS_EXTRA_PACKAGES:-}
+ROS_INSTALL_DIR=${ROS_INSTALL_DIR:-/usr/local/opt/ros/${ROS_DISTRO}}
 
-INSTALL_SPACE=/usr/local/opt/$ROS_DISTRO
-MACOS_VERSION=10.14
+ROOT_DIR=$PWD
 
 do_install()
 {
@@ -43,25 +43,11 @@ do_install()
   brew update
 
   # XQuartz
-  # if ! hash Xquartz 2>/dev/null; then
-    # brew tap homebrew/cask
-    # brew cask install xquartz
-    # echo "Log out and in to finalize XQuartz setup."
-    # exit 0
-  # fi
-
-  # Check for pip packages in the system Python directory.
-  if [ $(ls /Library/Python/2.7/site-packages/ | wc -l) -gt 1 ]; then
-    echo "These instructions are about to install Python from Homebrew. However, there are already"
-    echo "pip packages installed against the system python, in the following path:"
-    echo
-    echo "    /Library/Python/2.7/site-packages/"
-    echo
-    echo "If you have problems, please uninstall these packages:"
-    echo
-    echo "    for i in \$( pip freeze ); do sudo -H pip uninstall -y \$i; done"
-    echo
-    echo "Then delete the build directory and start over again from scratch."
+  if ! hash Xquartz 2>/dev/null; then
+    brew tap homebrew/cask
+    brew cask install xquartz
+    echo "Log out and in to finalize XQuartz setup."
+    exit 0
   fi
 
   # Check for root-owned stuff in /usr/local
@@ -78,112 +64,29 @@ do_install()
     echo "    sudo chown -R $USER:admin /usr/local/*"
   fi
 
-  # System pip
-  sudo /usr/bin/easy_install pip
-  mkdir -p ~/Library/Python/2.7/lib/python/site-packages
+    # Brewed Python
+  if [ ! "$(which python3)" = "/usr/local/bin/python3" ]; then
+    brew install python
+    mkdir -p ~/Library/Python/3.7/lib/python/site-packages
+    echo "$(brew --prefix)/lib/python3.7/site-packages" >> ~/Library/Python/3.7/lib/python/site-packages/homebrew.pth
+  fi
+  export PATH=$HOME/Library/Python/3.7/bin:$PATH
 
   # This tap gives us formulae for Gazebo and its dependencies, including SDF.
   brew tap osrf/simulation
 
   # Build tools
-  # brew install cmake ninja pkg-config
-  brew install ninja
+  brew install cmake ninja pkg-config || true
 
   # ROS infrastructure tools
-  brew install fltk osrf/simulation/gazebo11 gpgme lz4 opencv@3 openssl@1.1 orocos-kdl pcl poco yaml-cpp
-  sudo -H pip install -U setuptools
-  sudo -H pip install -U defusedxml empy pycryptodome
-  sudo -H pip install -U wxPython
-  sudo -H pip install -U wstool rosdep rosinstall rosinstall_generator rospkg catkin-pkg
-  sudo -H pip install -U catkin_tools bloom empy sphinx pycurl netifaces
+  brew install boost-python3 fltk osrf/simulation/gazebo11 gpgme lz4 opencv@3 orocos-kdl pcl poco yaml-cpp
+  # pip3 install --user -U defusedxml empy pycryptodome
+  # pip3 install --user -U wxPython
+  # pip3 install --user -U wstool rosdep rosinstall rosinstall_generator rospkg catkin-pkg
+  # pip3 install --user -U catkin_tools bloom empy sphinx pycurl netifaces
+  pip3 install -U -r requirements.txt --user
 
-  export CMAKE_PREFIX_PATH="/usr/local/opt/opencv@3:/usr/local/opt/openssl@1.1:/usr/local/opt/qt"
-  export CPPFLAGS="-I/usr/local/opt/qt/include -I/usr/local/opt/openssl@1.1/include -I/usr/local/opt/opencv@3/include -I/usr/local/include"
-  export LDFLAGS="-L/usr/local/opt/qt/lib -L/usr/local/opt/openssl@1.1/lib -L/usr/local/opt/opencv@3/lib -L/usr/local/lib"
-
-  export PATH="/usr/local/opt/qt/bin:$PATH"
-  export PKG_CONFIG_PATH="/usr/local/opt/qt/lib/pkgconfig:/usr/local/opt/openssl@1.1/lib/pkgconfig:/usr/local/opt/opencv@3/lib/pkgconfig"
-  export OpenCV_DIR="/usr/local/opt/opencv@3/share/OpenCV"
-  export Boost_INCLUDE_DIR="/usr/local/opt/boost/include"
-
-  # Build SIP
-  SIP_PREFIX=/usr/local/opt/sip-python2
-  curl -O https://www.riverbankcomputing.com/static/Downloads/sip/4.19.21/sip-4.19.21.tar.gz
-  tar xf sip-4.19.21.tar.gz
-  mkdir -p SIP_PREFIX
-  pushd sip-4.19.21
-  /usr/bin/python configure.py \
-                  --deployment-target=$MACOS_VERSION \
-                  --destdir=$SIP_PREFIX/lib/python2.7/site-packages \
-                  --bindir=$SIP_PREFIX/bin \
-                  --incdir=$SIP_PREFIX/include \
-                  --sipdir=$SIP_PREFIX/share/sip \
-                  --sip-module PyQt5.sip
-  make -j
-  make install
-  popd
-  export CMAKE_PREFIX_PATH=$SIP_PREFIX:$CMAKE_PREFIX_PATH
-  export CPPFLAGS=-I$SIP_PREFIX/include\ $CPPFLAGS
-  export LDFLAGS=-L$SIP_PREFIX/lib\ $LDFLAGS
-  echo "$SIP_PREFIX/lib/python2.7/site-packages" >> ~/Library/Python/2.7/lib/python/site-packages/ros.pth
-
-  # Build PyQt5
-  PYQT_PREFIX=/usr/local/opt/pyqt5-python2
-  curl -O https://files.pythonhosted.org/packages/7c/5b/e760ec4f868cb77cee45b4554bf15d3fe6972176e89c4e3faac941213694/PyQt5-5.14.0.tar.gz
-  tar xf PyQt5-5.14.0.tar.gz
-  mkdir -p $PYQT_PREFIX
-  pushd PyQt5-5.14.0
-  /usr/bin/python configure.py \
-                  --confirm-license \
-                  --bindir=$PYQT_PREFIX/bin \
-                  --destdir=$PYQT_PREFIX/lib/python2.7/site-packages \
-                  --stubsdir=$PYQT_PREFIX/lib/python2.7/site-packages/PyQt5 \
-                  --sipdir=$PYQT_PREFIX/share/sip/Qt5 \
-                  --sip-incdir=$SIP_PREFIX/include \
-                  --qmake=/usr/local/opt/qt5/bin/qmake \
-                  QMAKE_MACOSX_DEVELOPMENT_TARGET=$MACOS_VERSION \
-                  --designer-plugindir=$PYQT_PREFIX/PyQt5/share/plugins \
-                  --qml-plugindir=$PYQT_PREFIX/PyQt5/share/plugins \
-                  --verbose
-  make -j
-  make install
-  popd
-  export CMAKE_PREFIX_PATH=$PYQT_PREFIX:$CMAKE_PREFIX_PATH
-  export CPPFLAGS=-I$PYQT_PREFIX/include\ $CPPFLAGS
-  export LDFLAGS=-L$PYQT_PREFIX/lib\ $LDFLAGS
-  echo "$PYQT_PREFIX/lib/python2.7/site-packages" >> ~/Library/Python/2.7/lib/python/site-packages/ros.pth
-
-  # Build Boost.Python
-  BOOST_PY_PREFIX=/usr/local/opt/boost-python2
-  curl -O https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.bz2
-  tar xf boost_1_72_0.tar.bz2
-  mkdir -p $BOOST_PY_PREFIX
-  pushd boost_1_72_0
-  ./bootstrap.sh --prefix=$BOOST_PY_PREFIX \
-                 --libdir=$BOOST_PY_PREFIX/lib \
-                 --with-libraries=python \
-                 --with-python=python
-  ./b2  --build-dir=build-python \
-        --stagedir=stage-python \
-        --libdir=install-python/lib \
-        --prefix=install-python \
-        python=2.7 \
-        -d2 \
-        -j \
-        --layout=tagged-1.66 \
-        install \
-        threading=multi,single \
-        link=shared \
-        cxxflags=-stdlib=libc++ \
-        linkflags=-stdlib=libc++
-  cp -r install-python/lib/* $BOOST_PY_PREFIX/lib
-  cp -r install-python/lib/include/boost $BOOST_PY_PREFIX/include
-  popd
-  export CMAKE_PREFIX_PATH=$BOOST_PY_PREFIX:$CMAKE_PREFIX_PATH
-  export CPPFLAGS=-I$BOOST_PY_PREFIX/include\ $CPPFLAGS
-  export LDFLAGS=-L$BOOST_PY_PREFIX/lib\ $LDFLAGS
-  export Boost_INCLUDE_DIR=$BOOST_PY_PREFIX/include:$Boost_INCLUDE_DIR
-  echo "$BOOST_PY_PREFIX/lib/python2.7/site-packages" >> ~/Library/Python/2.7/lib/python/site-packages/ros.pth
+  . ./env3.sh
 
   # Initialize and update rosdep
   if [ ! -d /etc/ros/rosdep/ ]; then
@@ -193,35 +96,45 @@ do_install()
   rosdep update
 
   # Remove previous workspace if present, create and enter new one.
-  WS=ros_catkin_ws
+  WS="${ROS_DISTRO}-${ROS_CONFIGURATION}-ws"
   if [ -d "$WS" ]; then
     rm -rf "$WS"
   fi
   mkdir $WS
   cd $WS
 
+
   # Get standard source
-  rosinstall_generator ${ROS_CONFIGURATION} --rosdistro ${ROS_DISTRO} --deps --tar > ${ROS_INSTALL}.rosinstall
-  wstool init -j src melodic-desktop-full.rosinstall
+  rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
+  wstool init -j8 src ${WS}.rosinstall
 
-  # Patch cmake files
-  /usr/bin/python ../patch-cmake.py
+  # Patch src files
+  /usr/local/bin/python3 $ROOT_DIR/patch.py $WS/src
 
-  rosdep install --from-paths src --ignore-src --rosdistro melodic -y --skip-keys google-mock
+  # Package dependencies.
+  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --skip-keys google-mock
+
+  # Clean out or create the install directory.
+  if [ -d ${ROS_INSTALL_DIR} ]; then
+    rm -rf ${ROS_INSTALL_DIR}/*
+  else
+    mkdir -p ${ROS_INSTALL_DIR}
+  fi
 
   ./src/catkin/bin/catkin_make_isolated --install \
                                         --use-ninja \
-                                        --install-space $INSTALL_SPACE \
-                                        -DCMAKE_BUILD_TYPE=Release \
-                                        -DCMAKE_MACOSX_RPATH=ON \
-                                        -DCMAKE_INSTALL_RPATH=$INSTALL_SPACE/lib \
+                                        --install-space $ROS_INSTALL_DIR \
                                         -DCATKIN_ENABLE_TESTING=OFF \
+                                        -DCMAKE_BUILD_TYPE=Release \
+                                        -DCMAKE_CXX_STANDARD=14 \
                                         -DCMAKE_FIND_FRAMEWORK=LAST \
-                                        -DCMAKE_CXX_STANDARD=14
+                                        -DCMAKE_INSTALL_RPATH=$INSTALL_SPACE/lib \
+                                        -DCMAKE_MACOSX_RPATH=ON \
+                                        -DPYTHON_VERSION=3.7
 
   echo "Installation successful, please source the ROS workspace:"
   echo
-  echo "  source ${ROS_INSTALL_DIR}/setup.bash"
+  echo "  source ${ROS_INSTALL_DIR}/setup.sh"
   echo
 }
 
