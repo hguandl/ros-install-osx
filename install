@@ -24,7 +24,7 @@
 
 ROS_DISTRO=melodic
 ROS_CONFIGURATION=desktop_full
-ROS-INSTALL=melodic-desktop-full
+ROS_INSTALL="melodic-desktop-full"
 
 INSTALL_SPACE=/usr/local/opt/$ROS_DISTRO
 MACOS_VERSION=10.14
