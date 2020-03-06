@@ -109,10 +109,10 @@ do_install()
   wstool init -j8 src ${WS}.rosinstall
 
   # Patch src files
-  /usr/local/bin/python3 $ROOT_DIR/patch.py $WS/src
+  /usr/local/bin/python3 $ROOT_DIR/patch.py $ROOT_DIR/$WS/src
 
   # Package dependencies.
-  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --skip-keys google-mock
+  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --skip-keys google-mock || true
 
   # Clean out or create the install directory.
   if [ -d ${ROS_INSTALL_DIR} ]; then

@@ -8,3 +8,11 @@ matrix:
 
 script:
   - ./install
+
+before_cache:
+- rm -f $HOME/.cache/pip/log/debug.log
+
+cache:
+  directories:
+  - "$HOME/.cache/pip"
+  - "$HOME/Library/Caches/Homebrew"
