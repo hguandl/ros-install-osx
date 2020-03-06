@@ -90,7 +90,7 @@ do_install()
   brew install ninja
 
   # ROS infrastructure tools
-  brew install fltk osrf/simulation/gazebo11 gpgme lz4 opencv@3 openssl@1.1 orocos-kdl pck poco yaml-cpp
+  brew install fltk osrf/simulation/gazebo11 gpgme lz4 opencv@3 openssl@1.1 orocos-kdl pcl poco yaml-cpp
   sudo -H pip install -U defusedxml empy pycryptodome
   sudo -H pip install -U wxPython
   sudo -H pip install -U wstool rosdep rosinstall rosinstall_generator rospkg catkin-pkg
