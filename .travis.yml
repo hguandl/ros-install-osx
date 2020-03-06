@@ -3,8 +3,8 @@ language: generic
 matrix:
   include:
     - os: osx
-      osx_image: xcode8
-      env: ROS_CONFIGURATION=rviz PATH=/usr/local/bin:/usr/bin:/usr/sbin:/bin
+      osx_image: xcode11.3
+      env: PATH=/usr/local/bin:/usr/bin:/usr/sbin:/bin
 
 script:
   - ./install
