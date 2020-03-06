@@ -43,7 +43,7 @@ do_install()
   brew update
 
   # XQuartz
-  if ! hash xquartz 2>/dev/null; then
+  if ! hash Xquartz 2>/dev/null; then
     brew tap homebrew/cask
     brew cask install xquartz
     echo "Log out and in to finalize XQuartz setup."
