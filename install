@@ -86,7 +86,8 @@ do_install()
   brew tap osrf/simulation
 
   # Build tools
-  brew install cmake ninja pkg-config
+  # brew install cmake ninja pkg-config
+  brew install ninja
 
   # ROS infrastructure tools
   brew install fltk osrf/simulation/gazebo11 gpgme lz4 opencv@3 openssl@1.1 orocos-kdl pck poco yaml-cpp
