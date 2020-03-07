@@ -4,7 +4,7 @@ ROS_DISTRO=${ROS_DISTRO:-melodic}
 set -e
 
 source /usr/local/opt/ros/${ROS_DISTRO}/setup.sh
-mkdir -p /tmp/catkin_ws/src
-pushd /tmp/catkin_ws
-catkin_make
-popd
+#mkdir -p /tmp/catkin_ws/src
+#pushd /tmp/catkin_ws
+#catkin_make
+#popd
