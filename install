@@ -81,10 +81,6 @@ do_install()
 
   # ROS infrastructure tools
   brew install boost-python3 fltk osrf/simulation/gazebo11 gpgme lz4 opencv@3 orocos-kdl pcl poco yaml-cpp
-  # pip3 install --user -U defusedxml empy pycryptodome
-  # pip3 install --user -U wxPython
-  # pip3 install --user -U wstool rosdep rosinstall rosinstall_generator rospkg catkin-pkg
-  # pip3 install --user -U catkin_tools bloom empy sphinx pycurl netifaces
   pip3 install -U -r requirements.txt --user
 
   . ./env3.sh
@@ -117,7 +113,7 @@ do_install()
   /usr/local/bin/python3 $ROOT_DIR/patch.py $ROOT_DIR/$WS/src
 
   # Package dependencies.
-  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --skip-keys google-mock || true
+  rosdep check --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} --skip-keys google-mock
 
   # Clean out or create the install directory.
   if [ -d ${ROS_INSTALL_DIR} ]; then
