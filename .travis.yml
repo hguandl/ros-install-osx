@@ -1,10 +1,8 @@
-language: generic
+language: shell
 
-matrix:
-  include:
-    - os: osx
-      osx_image: xcode11.3
-      env: PATH=/usr/local/bin:/usr/bin:/usr/sbin:/bin:/opt/X11/bin \
+os: osx
+osx_image: xcode11.3
+env: PATH=/usr/local/bin:/usr/bin:/usr/sbin:/bin:/opt/X11/bin \
            ROS_DISTRO=melodic \
            ROS_CONFIGURATION=desktop_full
 
@@ -26,9 +24,8 @@ before_deploy:
 
 deploy:
   provider: releases
-  api_key: $GITHUB_TOKEN
+  token: $GITHUB_TOKEN
   file: ros-${ROS_DISTRO}-${ROS_CONFIGURATION}.tar.gz
-  skip_cleanup: true
   on:
     repo: hguandl/ros-install-osx
     tags: true
