@@ -18,3 +18,11 @@ libgazebo9-dev:
   osx:
     homebrew:
       packages: [osrf/simulation/gazebo9]
+gazebo9:
+  osx:
+    homebrew:
+      packages: [osrf/simulation/gazebo9]
+libboost-date-time-dev:
+  osx:
+    homebrew:
+      packages: [boost]
