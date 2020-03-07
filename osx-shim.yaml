@@ -25,23 +25,23 @@ libgpgme-dev:
 libqt5-core:
   osx:
     homebrew:
-      packages: [qt]
+      packages: [pyqt]
 libqt5-gui:
   osx:
     homebrew:
-      packages: [qt]
+      packages: [pyqt]
 libqt5-opengl:
   osx:
     homebrew:
-      packages: [qt]
+      packages: [pyqt]
 libqt5-opengl-dev:
   osx:
     homebrew:
-      packages: [qt]
+      packages: [pyqt]
 libqt5-widgets:
   osx:
     homebrew:
-      packages: [qt]
+      packages: [pyqt]
 python-cairo:
   osx:
     homebrew:
@@ -62,3 +62,11 @@ python-wxtools:
   osx:
     pip:
       packages: [wxPython]
+qt5-qmake:
+  osx:
+    homebrew:
+      packages: [pyqt]
+qtbase5-dev:
+  osx:
+    homebrew:
+      packages: [pyqt]
