@@ -1,5 +1,6 @@
 argparse
 catkin-pkg
+empy
 matplotlib
 mock
 Pillow
