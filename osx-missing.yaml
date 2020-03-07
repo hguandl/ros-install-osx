@@ -1,0 +1,20 @@
+libgpgme-dev:
+  osx:
+    homebrew:
+      packages: [gpgme]
+libboost-thread-dev:
+  osx:
+    homebrew:
+      packages: [boost]
+libboost-filesystem-dev:
+  osx:
+    homebrew:
+      packages: [boost]
+python-wxtools:
+  osx:
+    pip:
+      packages: [wxPython]
+libgazebo9-dev:
+  osx:
+    homebrew:
+      packages: [osrf/simulation/gazebo9]

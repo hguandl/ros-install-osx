@@ -4,8 +4,7 @@ ROS_DISTRO=${ROS_DISTRO:-melodic}
 set -e
 
 source /usr/local/opt/ros/${ROS_DISTRO}/setup.sh
-roscore > /dev/null 2>&1 &
-ROS_PID=$!
-sleep 5
-curl localhost:11311 > /dev/null 2>&1
-kill -SIGINT $ROS_PID
+mkdir -p /tmp/catkin_ws/src
+pushd /tmp/catkin_ws
+catkin_make
+popd
