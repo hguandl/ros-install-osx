@@ -73,6 +73,7 @@ do_install()
   fi
   export PATH=$HOME/Library/Python/3.7/bin:$PATH
 
+  brew tap nagakiran/deps
   # This tap gives us formulae for Gazebo and its dependencies, including SDF.
   brew tap osrf/simulation
 
@@ -80,7 +81,8 @@ do_install()
   brew install cmake ninja pkg-config || true
 
   # ROS infrastructure tools
-  brew install boost-python3 fltk osrf/simulation/gazebo11 gpgme lz4 opencv@3 orocos-kdl pcl poco yaml-cpp
+  brew install boost-python3 fltk gpgme lz4 opencv@3 orocos-kdl pcl poco yaml-cpp
+  brew install osrf/simulation/gazebo9 py3cairo sbcl tango-icon-theme
   pip3 install -U -r requirements.txt --user
 
   . ./env3.sh
@@ -91,8 +93,7 @@ do_install()
     sudo rosdep init
   fi
   if [ ! -f /etc/ros/rosdep/sources.list.d/00-shim.list ]; then
-    echo "yaml https://raw.githubusercontent.com/hguandl/ros-install-osx/master/osx-shim.yaml osx" | \
-      sudo tee /etc/ros/rosdep/sources.list.d/00-shim.list
+    sudo ./shim
   fi
   rosdep update
 

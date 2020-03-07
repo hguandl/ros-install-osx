@@ -1,3 +1,4 @@
+argparse
 catkin-pkg
 matplotlib
 mock
