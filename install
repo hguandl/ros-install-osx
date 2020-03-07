@@ -94,9 +94,9 @@ do_install()
     echo "This sudo prompt is to initialize rosdep (creates the /etc/ros/rosdep path)."
     sudo rosdep init
   fi
-  if [ ! -f /etc/ros/rosdep/sources.list.d/30-missing.list ]; then
-    echo "yaml https://raw.githubusercontent.com/hguandl/ros-install-osx/master/osx-missing.yaml osx" | \
-      sudo tee /etc/ros/rosdep/sources.list.d/30-missing.list
+  if [ ! -f /etc/ros/rosdep/sources.list.d/00-shim.list ]; then
+    echo "yaml https://raw.githubusercontent.com/hguandl/ros-install-osx/master/osx-shim.yaml osx" | \
+      sudo tee /etc/ros/rosdep/sources.list.d/00-shim.list
   fi
   rosdep update
 

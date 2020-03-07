@@ -22,43 +22,43 @@ libgpgme-dev:
   osx:
     homebrew:
       packages: [gpgme]
-python-wxtools:
-  osx:
-    pip:
-      packages: [wxPython]
-python-qt5-bindings:
-  osx:
-    homebrew:
-      packages: [pyqt5, sip]
-python-qt5-bindings-gl:
-  osx:
-    homebrew:
-      packages: [pyqt5, sip]
-python-qt5-bindings-webkit:
-  osx:
-    homebrew:
-      packages: [pyqt5, sip]
 libqt5-core:
   osx:
     homebrew:
-      packages: [qt5]
+      packages: [qt]
 libqt5-gui:
   osx:
     homebrew:
-      packages: [qt5]
+      packages: [qt]
 libqt5-opengl:
   osx:
     homebrew:
-      packages: [qt5]
+      packages: [qt]
 libqt5-opengl-dev:
   osx:
     homebrew:
-      packages: [qt5]
+      packages: [qt]
 libqt5-widgets:
   osx:
     homebrew:
-      packages: [qt5]
+      packages: [qt]
 python-cairo:
   osx:
     homebrew:
       packages: [py3cairo]
+python-qt5-bindings:
+  osx:
+    homebrew:
+      packages: [pyqt, sip]
+python-qt5-bindings-gl:
+  osx:
+    homebrew:
+      packages: [pyqt, sip]
+python-qt5-bindings-webkit:
+  osx:
+    homebrew:
+      packages: [pyqt, sip]
+python-wxtools:
+  osx:
+    pip:
+      packages: [wxPython]
