@@ -3,7 +3,7 @@ ROS_DISTRO=${ROS_DISTRO:-melodic}
 
 set -e
 
-source /usr/local/opt/${ROS_DISTRO}/setup.sh
+source /usr/local/opt/rot/${ROS_DISTRO}/setup.sh
 roscore > /dev/null 2>&1 &
 ROS_PID=$!
 sleep 5
