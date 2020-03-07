@@ -4,10 +4,13 @@ matrix:
   include:
     - os: osx
       osx_image: xcode11.3
-      env: PATH=/usr/local/bin:/usr/bin:/usr/sbin:/bin:/opt/X11/bin
+      env: PATH=/usr/local/bin:/usr/bin:/usr/sbin:/bin:/opt/X11/bin \
+           ROS_DISTRO=melodic \
+           ROS_CONFIGURATION=desktop_full
 
 script:
-  - ./install
+- ./install
+- ./test
 
 before_cache:
 - rm -f $HOME/.cache/pip/log/debug.log
@@ -16,3 +19,15 @@ cache:
   directories:
   - "$HOME/.cache/pip"
   - "$HOME/Library/Caches/Homebrew"
+
+before_deploy:
+- tar zcf ros-${ROS_DISTRO}-${ROS_CONFIGURATION}.tar.gz -C /usr/local/opt ${ROS_DISTRO}
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file: ros-${ROS_DISTRO}-${ROS_CONFIGURATION}.tar.gz
+  skip_cleanup: true
+  on:
+    repo: hguandl/ros-install-osx
+    tags: true

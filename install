@@ -41,6 +41,7 @@ do_install()
     brew doctor
   fi
   brew update
+  brew upgrade
 
   # XQuartz
   if ! hash Xquartz 2>/dev/null; then

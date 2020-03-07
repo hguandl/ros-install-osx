@@ -1,0 +1,11 @@
+#!/bin/bash
+ROS_DISTRO=${ROS_DISTRO:-melodic}
+
+set -e
+
+source /usr/local/opt/${ROS_DISTRO}/setup.sh
+roscore > /dev/null 2>&1 &
+ROS_PID=$!
+sleep 5
+curl localhost:11311 > /dev/null 2>&1
+kill -SIGINT $ROS_PID

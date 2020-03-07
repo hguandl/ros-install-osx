@@ -6,6 +6,10 @@ import re
 import sys
 
 
+def log_patching(file, reason):
+    print(f"Patching {file} for {reason}...")
+
+
 def remove_signals(WS_SRC):
     TARGET_FILE = os.path.join(WS_SRC, '**', 'CMakeLists.txt')
 
@@ -15,6 +19,7 @@ def remove_signals(WS_SRC):
             content = f.read()
             match = re.findall(regex, content)
             if match:
+                log_patching(cmake, "remove signals")
                 result = re.sub(regex, r"\1\2", content)
                 f.seek(0)
                 f.truncate()
@@ -31,6 +36,7 @@ def add_class_loader(WS_SRC):
         cmake = os.path.join(WS_SRC, pkg, 'CMakeLists.txt')
         regex = re.compile(r"(find_package\(.*catkin(?:.|\n)*?)\)")
         with open(cmake, 'r+') as f:
+            log_patching(cmake, "link class_loader")
             content = f.read()
             result = re.sub(regex, r"\1 class_loader)", content)
             f.seek(0)
@@ -44,6 +50,7 @@ def fix_pip_setup(WS_SRC):
     for pkg in TARGET_PKGS:
         setup_py = os.path.join(WS_SRC, pkg, 'setup.py')
         with open(setup_py, 'r+') as f:
+            log_patching(setup_py, "setup script")
             content = f.read()
             result = content.replace("package_dir={'': ''}", "package_dir={'': '.'}")
             f.seek(0)
@@ -60,7 +67,7 @@ def rename_boost_python(WS_SRC):
             content = f.read()
             match = re.findall(regex, content)
             if match:
-                print(cmake)
+                log_patching(cmake, "boost python")
                 result = re.sub(regex, r"\1 python\2", content)
                 f.seek(0)
                 f.truncate()
@@ -83,6 +90,7 @@ def openssl_inc(WS_SRC):
     insert_content = '\n'.join(insert_contents)
 
     with open(cmake, 'r+') as f:
+        log_patching(cmake, "openssl")
         content = f.read()
         result = content.replace(insert_entry, insert_content)
         f.seek(0)
